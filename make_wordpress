@@ -1,0 +1,37 @@
+#!/bin/bash
+echo -e "Please Enter Name To Build Images With\n"
+read im_name
+#im_name=$1
+
+## Create Directories and Files #####
+	mkdir wordpress
+	cd wordpress
+		mkdir -p  mysql php-fpm/conf php-fpm/app downloader nginx/conf && cd ..
+	cp mysql_Dock wordpress/mysql/Dockerfile
+	cp mysql_mycnf wordpress/mysql/my.cnf
+	cp mysql_startdb wordpress/mysql/startdb.sh && chmod +x wordpress/mysql/startdb.sh
+	cp download_Dock wordpress/downloader/Dockerfile
+	cp download_run	wordpress/downloader/run.sh && chmod +x wordpress/downloader/run.sh
+	cp phpfpm_Dock wordpress/php-fpm/Dockerfile
+	cp php-fpm.conf wordpress/php-fpm/conf/
+	cp phpfpm_www.conf wordpress/php-fpm/conf/www.conf 
+	cp phpfpm_run wordpress/php-fpm/run.sh && chmod +x wordpress/php-fpm/run.sh
+	cp nginx_Dock wordpress/nginx/Dockerfile
+	cp nginx_default.conf wordpress/nginx/conf/default.conf
+	cp nginx.conf wordpress/nginx/conf/
+	
+########## Build Images ###########
+
+## build mysql image ####
+	docker build -t ${im_name}/mysql wordpress/mysql/
+## build downloader image ####
+	docker build -t ${im_name}/download wordpress/downloader/ 
+## build php-fpm image ####
+	docker build -t ${im_name}/phpfpm wordpress/php-fpm/ 
+########## change backend path in nginx to name user enter #######
+sed -ie "s/scriptamr/${im_name}-phpfpm/g" wordpress/nginx/conf/default.conf
+## build nginx image ####
+	docker build -t ${im_name}/nginx wordpress/nginx/
+############################
+#Remove folder created 
+rm -rf wordpress/

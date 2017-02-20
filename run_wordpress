@@ -1,0 +1,15 @@
+#!/bin/bash
+echo -e " PLease Enter The Name of Image\n"
+read im_name
+#im_name=$1
+##############################
+#### run Downloader #######
+docker run -i -t --name ${im_name}-download ${im_name}/download
+
+##### run Mysql Container as a daemon #####
+docker run -d --name ${im_name}-mysql ${im_name}/mysql
+###### run php-fpm container as a daemon with share volume from dowloader ##### 
+docker run -d --name ${im_name}-phpfpm --volumes-from ${im_name}-download --link ${im_name}-mysql:db ${im_name}/phpfpm
+
+docker run -d -p `shuf -i 2000-65000 -n 1`:80 --name ${im_name}-nginx --volumes-from ${im_name}-download --link ${im_name}-phpfpm:${im_name}-phpfpm ${im_name}/nginx
+
