@@ -1,7 +1,7 @@
 # Lemp_wordpress in docker container
-install lemp Stack with Wordpress in Ubuntu \n
-to run this stack do the following \n
-1- Clone all files in same directory
+Install lemp Stack with Wordpress in Ubuntu.
+To run this stack do the following:
+1- Clone all files in same directory.
 2- chmod u+x make_wordpress run_wordpress
 3- Run make_wordpress 
 4- Enter name to assign it to images will created 
